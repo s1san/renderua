@@ -1,7 +1,0 @@
-﻿  tgaimage.cpp
-D:\money\ComputerGraphics\renderua\tgaimage.cpp(285,9): warning C4552: ”!=“: 未使用表达式结果
-  正在生成代码
-  Previous IOBJ not found, fall back to full compilation.
-  All 158 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  已完成代码的生成
-  renderer.vcxproj -> D:\money\ComputerGraphics\renderua\x64\Release\renderer.exe
