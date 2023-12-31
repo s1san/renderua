@@ -4,70 +4,63 @@
 #include <fstream>
 
 #pragma pack(push,1)
-struct TGA_Header
-{
-	char id_length;
-	char color_map_type;
-	char data_type_code;
-	short color_map_origin;
-	short color_map_length;
-	char color_map_depth;
+struct TGA_Header {
+	char idlength;
+	char colormaptype;
+	char datatypecode;
+	short colormaporigin;
+	short colormaplength;
+	char colormapdepth;
 	short x_origin;
 	short y_origin;
 	short width;
 	short height;
-	char bits_per_pixel;
-	char image_desciptor;
+	char  bitsperpixel;
+	char  imagedescriptor;
 };
 #pragma pack(pop)
 
-struct TGAColor
-{
-	unsigned char bgra[4];
-	unsigned char bytespp;
 
-	TGAColor() :bgra(), bytespp(1)
-	{
-		for (int i = 0; i < 4; i++)
-			bgra[i] = 0;
+
+struct TGAColor {
+	union {
+		struct {
+			unsigned char b, g, r, a;
+		};
+		unsigned char raw[4];
+		unsigned int val;
+	};
+	int bytespp;
+
+	TGAColor() : val(0), bytespp(1) {
 	}
 
-	TGAColor(unsigned char R, unsigned char G, unsigned char B, unsigned char A=255) :bgra(), bytespp(4)
-	{
-		bgra[0] = B;
-		bgra[1] = G;
-		bgra[2] = R;
-		bgra[3] = A;
+	TGAColor(unsigned char R, unsigned char G, unsigned char B, unsigned char A = 255) : b(B), g(G), r(R), a(A), bytespp(4) {
 	}
 
-	TGAColor(unsigned char v) :bgra(), bytespp(1)
-	{
-		for (int i = 0; i < 4; i++)
-			bgra[i] = 0;
-		bgra[0] = v;
+	TGAColor(int v, int bpp) : val(v), bytespp(bpp) {
 	}
 
-	TGAColor(const unsigned char* p, unsigned char bpp) :bgra(), bytespp(bpp)
-	{
-		for (int i = 1; i < (int)bpp; i++)
-			bgra[i] = p[i];
-		for (int i = bpp; i < 4; i++)
-			bgra[i] = 0;
+	TGAColor(const TGAColor& c) : val(c.val), bytespp(c.bytespp) {
 	}
 
-	unsigned char& operator[](const int i) { return bgra[i]; }
+	TGAColor(const unsigned char* p, int bpp) : val(0), bytespp(bpp) {
+		for (int i = 0; i < bpp; i++) {
+			raw[i] = p[i];
+		}
+	}
 
-	TGAColor operator*(float intensity) const
-	{
-		TGAColor res = *this;
-		intensity = (intensity > 1.f ? 1.f : (intensity < 0.f ? 0.f : intensity));
-		for (int i = 0; i < 4; i++)res.bgra[i] = bgra[i] * intensity;
-		return res;
+	TGAColor& operator =(const TGAColor& c) {
+		if (this != &c) {
+			bytespp = c.bytespp;
+			val = c.val;
+		}
+		return *this;
 	}
 };
 
-class TGAImage
-{
+
+class TGAImage {
 protected:
 	unsigned char* data;
 	int width;
@@ -77,8 +70,7 @@ protected:
 	bool   load_rle_data(std::ifstream& in);
 	bool unload_rle_data(std::ofstream& out);
 public:
-	enum Format
-	{
+	enum Format {
 		GRAYSCALE = 1, RGB = 3, RGBA = 4
 	};
 
@@ -91,10 +83,9 @@ public:
 	bool flip_vertically();
 	bool scale(int w, int h);
 	TGAColor get(int x, int y);
-	bool set(int x, int y,		 TGAColor& c);
-	bool set(int x, int y, const TGAColor& c);
+	bool set(int x, int y, TGAColor c);
 	~TGAImage();
-	TGAImage& operator=(const TGAImage& img);
+	TGAImage& operator =(const TGAImage& img);
 	int get_width();
 	int get_height();
 	int get_bytespp();
@@ -102,4 +93,4 @@ public:
 	void clear();
 };
 
-#endif // !define __IMAGE_H__
+#endif //__IMAGE_H__
