@@ -141,7 +141,7 @@ bool TGAImage::load_rle_data(std::ifstream& in)
 			chunk_header++;
 			for (int i = 0; i < chunk_header; i++)
 			{
-				in.read((char*)color_buffer.raw, bytespp);
+				in.read((char*)color_buffer.bgra, bytespp);
 				if (!in.good())
 				{
 					std::cerr << "an error occured while reading the header\n";
@@ -149,7 +149,7 @@ bool TGAImage::load_rle_data(std::ifstream& in)
 				}
 
 				for (int j = 0; j < bytespp; j++)
-					data[current_byte++] = color_buffer.raw[j];
+					data[current_byte++] = color_buffer.bgra[j];
 				current_pixel++;
 				if (current_pixel > pixel_count)
 				{
@@ -161,7 +161,7 @@ bool TGAImage::load_rle_data(std::ifstream& in)
 		else
 		{
 			chunk_header -= 127;
-			in.read((char*)color_buffer.raw, bytespp);
+			in.read((char*)color_buffer.bgra, bytespp);
 			if (!in.good())
 			{
 				std::cerr << "an error occured while reading the header\n";
@@ -171,7 +171,7 @@ bool TGAImage::load_rle_data(std::ifstream& in)
 			for (int i = 0; i < chunk_header; i++)
 			{
 				for (int j = 0; j < bytespp; j++)
-					data[current_byte++] = color_buffer.raw[j];
+					data[current_byte++] = color_buffer.bgra[j];
 				current_pixel++;
 				if (current_pixel > pixel_count)
 				{
@@ -320,11 +320,19 @@ TGAColor TGAImage::get(int x, int y)
 	return TGAColor(data + (x + y * width) * bytespp, bytespp);
 }
 
-bool TGAImage::set(int x, int y, TGAColor c)
+bool TGAImage::set(int x, int y, TGAColor& c)
 {
 	if (!data || x < 0 || y < 0 || x >= width || y >= height)
 		return false;
-	memcpy(data + (x + y * width) * bytespp, c.raw, bytespp);
+	memcpy(data + (x + y * width) * bytespp, c.bgra, bytespp);
+	return true;
+}
+
+bool TGAImage::set(int x, int y, const TGAColor& c)
+{
+	if (!data || x < 0 || y < 0 || x >= width || y >= height)
+		return false;
+	memcpy(data + (x + y * width) * bytespp, c.bgra, bytespp);
 	return true;
 }
 

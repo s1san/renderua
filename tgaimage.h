@@ -23,50 +23,46 @@ struct TGA_Header
 
 struct TGAColor
 {
-	union
-	{
-		struct {
-			unsigned char b, g, r, a;
-		};
-		unsigned char raw[4];
-		unsigned int val;
-	};
-	int bytespp;
+	unsigned char bgra[4];
+	unsigned char bytespp;
 
-	TGAColor() :val(0), bytespp(1)
+	TGAColor() :bgra(), bytespp(1)
 	{
-
+		for (int i = 0; i < 4; i++)
+			bgra[i] = 0;
 	}
 
-	TGAColor(unsigned char R, unsigned char G, unsigned char B, unsigned char A) :r(R), g(G), b(B), a(A), bytespp(4)
+	TGAColor(unsigned char R, unsigned char G, unsigned char B, unsigned char A=255) :bgra(), bytespp(4)
 	{
-
+		bgra[0] = B;
+		bgra[1] = G;
+		bgra[2] = R;
+		bgra[3] = A;
 	}
 
-	TGAColor(int v, int bpp) :val(v), bytespp(bpp)
+	TGAColor(unsigned char v) :bgra(), bytespp(1)
 	{
-
+		for (int i = 0; i < 4; i++)
+			bgra[i] = 0;
+		bgra[0] = v;
 	}
 
-	TGAColor(const TGAColor& c) :val(c.val), bytespp(c.bytespp)
+	TGAColor(const unsigned char* p, unsigned char bpp) :bgra(), bytespp(bpp)
 	{
-
+		for (int i = 1; i < (int)bpp; i++)
+			bgra[i] = p[i];
+		for (int i = bpp; i < 4; i++)
+			bgra[i] = 0;
 	}
 
-	TGAColor(const unsigned char* p, int bpp) :val(0), bytespp(bpp)
-	{
-		for (int i = 1; i < bpp; i++)
-			raw[i] = p[i];
-	}
+	unsigned char& operator[](const int i) { return bgra[i]; }
 
-	TGAColor& operator=(const TGAColor& c)
+	TGAColor operator*(float intensity) const
 	{
-		if (this != &c)
-		{
-			bytespp = c.bytespp;
-			val = c.val;
-		}
-		return *this;
+		TGAColor res = *this;
+		intensity = (intensity > 1.f ? 1.f : (intensity < 0.f ? 0.f : intensity));
+		for (int i = 0; i < 4; i++)res.bgra[i] = bgra[i] * intensity;
+		return res;
 	}
 };
 
@@ -95,7 +91,8 @@ public:
 	bool flip_vertically();
 	bool scale(int w, int h);
 	TGAColor get(int x, int y);
-	bool set(int x, int y, TGAColor c);
+	bool set(int x, int y,		 TGAColor& c);
+	bool set(int x, int y, const TGAColor& c);
 	~TGAImage();
 	TGAImage& operator=(const TGAImage& img);
 	int get_width();
