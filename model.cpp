@@ -87,12 +87,12 @@ Vec3f Model::vert(int i)
 
 void Model::load_texture(std::string filename, const char* suffix, TGAImage& img)
 {
-	std::string textfile(filename);
-	size_t dot = textfile.find_last_of(".");
+	std::string texfile(filename);
+	size_t dot = texfile.find_last_of(".");
 	if (dot != std::string::npos)
 	{
-		textfile = textfile.substr(0, dot) + std::string(suffix);
-		std::cerr << "texture file " << textfile << " loading " << (img.read_tga_file(textfile.c_str()) ? "ok" : "false") << std::endl;
+		texfile = texfile.substr(0, dot) + std::string(suffix);
+		std::cerr << "texture file " << texfile << " loading " << (img.read_tga_file(texfile.c_str()) ? "ok" : "failed") << std::endl;
 		img.flip_vertically();
 	}
 }
@@ -106,4 +106,10 @@ Vec2i Model::uv(int iface, int nvert)
 {
 	int idx = faces_[iface][nvert][1];
 	return Vec2i(uv_[idx].x * diffusemap_.get_width(), uv_[idx].y * diffusemap_.get_height());
+}
+
+Vec3f Model::norm(int iface, int nvert)
+{
+	int idx = faces_[iface][nvert][2];
+	return norms_[idx].normalize();
 }
