@@ -13,28 +13,34 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="our_gl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="geometry.h">
-      <Filter>源文件</Filter>
+      <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="model.h">
-      <Filter>源文件</Filter>
+      <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="tgaimage.h">
-      <Filter>源文件</Filter>
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="geometry.cpp">
-      <Filter>头文件</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>头文件</Filter>
+    <ClCompile Include="tgaimage.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="model.cpp">
-      <Filter>头文件</Filter>
+      <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="tgaimage.cpp">
-      <Filter>头文件</Filter>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="geometry.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="our_gl.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

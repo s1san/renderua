@@ -54,6 +54,8 @@ struct TGAColor {
 		}
 	}
 
+	unsigned char& operator[](const int i) { return bgra[i]; }
+
 	TGAColor operator *(float intensity) const {
 		TGAColor res = *this;
 		intensity = (intensity > 1.f ? 1.f : (intensity < 0.f ? 0.f : intensity));
@@ -86,7 +88,8 @@ public:
 	bool flip_vertically();
 	bool scale(int w, int h);
 	TGAColor get(int x, int y);
-	bool set(int x, int y, TGAColor c);
+	bool set(int x, int y,TGAColor& c);
+	bool set(int x, int y,const TGAColor& c);
 	~TGAImage();
 	TGAImage& operator =(const TGAImage& img);
 	int get_width();
