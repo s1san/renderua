@@ -6,7 +6,7 @@
 
 #include "model.h"
 
-Model::Model(const char* filename) :verts_(), faces_(),norms_(),uv_()
+Model::Model(const char* filename) :verts_(), faces_(), norms_(), uv_(), diffusemap_(), normalmap_(), specularmap_()
 {
 	std::ifstream in;
 	in.open(filename, std::ifstream::in);
@@ -55,8 +55,8 @@ Model::Model(const char* filename) :verts_(), faces_(),norms_(),uv_()
 
 	std::cerr << "# v# " << verts_.size() << " f# " << faces_.size() << " vt# " << uv_.size() << " vn# " << norms_.size() << std::endl;
 	load_texture(filename, "_diffuse.tga", diffusemap_);
-	load_texture(filename, "_nm_tangent.tga", normalmap_);
-	load_texture(filename, "_spec.tga", diffusemap_);
+	load_texture(filename, "_nm.tga",	   normalmap_);
+	load_texture(filename, "_spec.tga",	   specularmap_);
 
 }
 
@@ -87,7 +87,7 @@ Vec3f Model::vert(int i)
 	return verts_[i];
 }
 
-Vec3f Model::vert(int iface,int nthvert)
+Vec3f Model::vert(int iface, int nthvert)
 {
 	return verts_[faces_[iface][nthvert][0]];
 }
@@ -107,7 +107,7 @@ void Model::load_texture(std::string filename, const char* suffix, TGAImage& img
 TGAColor Model::diffuse(Vec2f uvf)
 {
 	Vec2i uv(uvf[0] * diffusemap_.get_width(), uvf[1] * diffusemap_.get_height());
-	return diffusemap_.get(uv[0],uv[1]);
+	return diffusemap_.get(uv[0], uv[1]);
 }
 
 Vec3f Model::normal(Vec2f uvf)
